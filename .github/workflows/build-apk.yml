@@ -21,13 +21,12 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Install NDK and build tools
         run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager "ndk;29.0.13846066" "platforms;android-35" "build-tools;35.0.0"
+          sdkmanager "ndk;29.0.13846066" "platforms;android-35" "build-tools;35.0.0" || \
+          sdkmanager "ndk;29.0.13846066" "platforms;android-35"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
