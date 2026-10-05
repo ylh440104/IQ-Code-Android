@@ -36,6 +36,19 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Generate signing keystore
+        run: |
+          mkdir -p app/signing
+          keytool -genkeypair -v \
+            -keystore app/signing/iqge-local-dev.jks \
+            -storetype PKCS12 \
+            -storepass IQCodeLocalDev2026 \
+            -keypass IQCodeLocalDev2026 \
+            -alias iqge \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=IQ Code, OU=CI, O=IQCode, L=NA, ST=NA, C=CN"
+          ls -l app/signing/
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
