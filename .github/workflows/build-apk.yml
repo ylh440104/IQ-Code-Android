@@ -24,9 +24,14 @@ jobs:
       - name: Install NDK and build tools
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME"
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager "ndk;29.0.13846066" "platforms;android-35" "build-tools;35.0.0" || \
-          sdkmanager "ndk;29.0.13846066" "platforms;android-35"
+          ls "$ANDROID_HOME/cmdline-tools" || true
+          SDKMGR="$(ls -d $ANDROID_HOME/cmdline-tools/*/bin 2>/dev/null | head -1)/sdkmanager"
+          if [ ! -x "$SDKMGR" ]; then SDKMGR="$(find $ANDROID_HOME -name sdkmanager -type f | head -1)"; fi
+          echo "using $SDKMGR"
+          yes | "$SDKMGR" --licenses > /dev/null 2>&1 || true
+          "$SDKMGR" "ndk;29.0.13846066" "platforms;android-35" "build-tools;35.0.0" || \
+          "$SDKMGR" "ndk;29.0.13846066" "platforms;android-35"
+          ls "$ANDROID_HOME/ndk"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
